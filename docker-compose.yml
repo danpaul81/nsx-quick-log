@@ -1,0 +1,27 @@
+version: "3"
+services:
+  fluentd:
+    build: ./fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "5140:5140/udp"
+    #ports:
+      #- "127.0.0.1:24224:24224"
+      #- "127.0.0.1:24224:24224/udp"
+    depends_on:
+      - elasticsearch
+  elasticsearch:
+    image: elasticsearch:7.6.0
+    environment:
+      - "discovery.type=single-node"
+    expose:
+      - "9200"
+    ports:
+     - "9200:9200"
+    volumes:
+      - ./elasticdata:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:7.2.0
+    ports:
+      - "5601:5601"
